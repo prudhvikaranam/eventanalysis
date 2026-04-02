@@ -59,6 +59,54 @@ export default function Dashboard() {
   }, []);
 
 
+  {
+    analyticsData.funnel.map((f, i) => (
+      <div
+        key={i}
+        style={{
+          background: "linear-gradient(135deg, #667eea, #764ba2)",
+          color: "#fff",
+          padding: "14px 16px",
+          marginBottom: "10px",
+          borderRadius: "10px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontWeight: "500",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          transition: "all 0.25s ease",
+          cursor: "pointer"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px) scale(1.01)";
+          e.currentTarget.style.boxShadow =
+            "0 8px 20px rgba(0,0,0,0.25)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0) scale(1)";
+          e.currentTarget.style.boxShadow =
+            "0 4px 12px rgba(0,0,0,0.15)";
+        }}
+      >
+        <span>{f.step}</span>
+        <span style={{ fontWeight: "bold" }}>{f.users}</span>
+      </div>
+    ))
+  }
+
+  const getColor = (index) => {
+    const colors = [
+      "linear-gradient(135deg, #3b82f6, #06b6d4)",
+      "linear-gradient(135deg, #6366f1, #8b5cf6)",
+      "linear-gradient(135deg, #8b5cf6, #ec4899)",
+      "linear-gradient(135deg, #ec4899, #f43f5e)",
+      "linear-gradient(135deg, #f59e0b, #ef4444)",
+      "linear-gradient(135deg, #10b981, #059669)",
+      "linear-gradient(135deg, #0ea5a4, #14b8a6)"
+    ];
+    return colors[index % colors.length];
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <h2 style={{
@@ -72,6 +120,8 @@ export default function Dashboard() {
         color: "transparent"
       }}>Analytics Dashboard</h2>
 
+      <br /><br />
+
       <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
         <MetricsCard title="Users" value={analyticsData.totalUsers} />
         <MetricsCard title="Orders" value={analyticsData.totalOrders} />
@@ -81,16 +131,70 @@ export default function Dashboard() {
 
       <div style={{ marginBottom: "20px" }}>
         <h3>Funnel</h3>
-        {analyticsData.funnel.map((f, i) => (
-          <div key={i} style={{
-            background: "#fff",
-            padding: "10px",
-            marginBottom: "6px",
-            borderRadius: "6px"
-          }}>
-            {f.step} → {f.users}
-          </div>
-        ))}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "16px"
+          }}
+        >
+          {analyticsData.funnel.map((f, i) => {
+            const prevUsers = analyticsData.funnel[i - 1]?.users;
+
+            const drop =
+              prevUsers && prevUsers > 0
+                ? (((prevUsers - f.users) / prevUsers) * 100).toFixed(1)
+                : null;
+
+            return (
+              <div
+                key={i}
+                style={{
+                  flex: "1 1 220px", // responsive width
+                  minWidth: "200px",
+                  maxWidth: "260px",
+                  padding: "16px",
+                  borderRadius: "12px",
+                  background: getColor(i),
+                  color: "#fff",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                  cursor: "pointer"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 28px rgba(0,0,0,0.18)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 18px rgba(0,0,0,0.1)";
+                }}
+              >
+                {/* Step */}
+                <div style={{ fontWeight: 600, fontSize: "14px" }}>
+                  {f.step.replaceAll("_", " ")}
+                </div>
+
+                {/* Users */}
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, marginTop: "10px" }}>
+                  {f.users}
+                </div>
+
+                {/* Drop */}
+                {drop && (
+                  <div style={{ fontSize: "12px", opacity: 0.85, marginTop: "6px" }}>
+                    ↓ {drop}% drop
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
