@@ -136,11 +136,11 @@ export default function Dashboard() {
                   {f.users}
                 </div>
 
-                {drop && (
+                {/* {drop && (
                   <div style={{ fontSize: "12px", color: "#ef4444", marginTop: "6px" }}>
                     ↓ {drop}% drop
                   </div>
-                )}
+                )} */}
               </div>
             );
           })}
