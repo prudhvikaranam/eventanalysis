@@ -89,7 +89,7 @@ export default function Dashboard() {
       <div style={{ marginBottom: "20px" }}>
         <h3>Funnel</h3>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", background: "#041158", padding: "24px", borderRadius: "5px" }}>
           {analyticsData.funnel.map((f, i) => {
             const prevUsers = analyticsData.funnel[i - 1]?.users;
 
